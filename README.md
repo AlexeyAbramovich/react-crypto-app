@@ -1,8 +1,17 @@
-# React + Vite
+# Functionality
+- Adding crypto assets
+- Displaying important info about coins/crypto portfolio in different formats(chart/table)
+- Getting current information about chosen coin
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Used technologies
+-  JavaScript
+-  React
+-  react-chartjs-2
+-  AntD
 
-Currently, two official plugins are available:
+# Preview
+![image](https://github.com/AlexeyAbramovich/react-crypto-app/assets/74393859/985eac76-692e-432f-99c4-9077da55514c)
+![image](https://github.com/AlexeyAbramovich/react-crypto-app/assets/74393859/42f7377f-e232-4dbe-9ec1-46ce9c6e58ee)
+![image](https://github.com/AlexeyAbramovich/react-crypto-app/assets/74393859/f109450f-55ea-4957-8d32-ba48a2ea0418)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+
