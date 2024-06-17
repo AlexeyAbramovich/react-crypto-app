@@ -1,14 +1,13 @@
 import { Layout } from 'antd'
 import { AssetItem } from '../AssetItem'
-import { useContext } from 'react'
-import CryptoContext from '../../context/CryptoContextProvider'
+import { useCrypto } from '../../hooks/useCrypto'
 
 const siderStyle = {
   padding: '1rem',
 }
 
 export const AppSider = () => {
-  const { assets } = useContext(CryptoContext)
+  const { assets } = useCrypto()
 
   return (
     <Layout.Sider width="25%" style={siderStyle}>
