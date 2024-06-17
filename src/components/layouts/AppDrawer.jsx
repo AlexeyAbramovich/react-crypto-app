@@ -10,7 +10,7 @@ export const AppDrawer = ({ isDrawerOpen, setDrawer }) => {
       open={isDrawerOpen}
       destroyOnClose
     >
-      <AddAssetFrom />
+      <AddAssetFrom onClose={() => setDrawer(false)} />
     </Drawer>
   )
 }

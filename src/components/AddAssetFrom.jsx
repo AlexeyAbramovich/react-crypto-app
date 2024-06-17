@@ -1,16 +1,16 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useCrypto } from '../hooks/useCrypto'
 import {
   Select,
-  Flex,
   Divider,
-  Typography,
   Form,
   InputNumber,
   Button,
   DatePicker,
+  Result,
 } from 'antd'
 import { SelectItem } from './SelectItem'
+import { CoinInfo } from './CoinInfo'
 
 const validateMessages = {
   required: '${label} is required!',
@@ -20,19 +20,56 @@ const validateMessages = {
   range: '${label} must be between ${min} and ${max}',
 }
 
-export const AddAssetFrom = () => {
-  const { data } = useCrypto()
+export const AddAssetFrom = ({ onClose }) => {
+  const { data, addAsset } = useCrypto()
   const [coin, setCoin] = useState(null)
   const [form] = Form.useForm()
+  const [submitted, setSubmitted] = useState(false)
+  const assetRef = useRef()
 
   const handleSelect = (value) => {
     setCoin(data.find((coin) => coin.id === value))
   }
 
   const handleAmountChange = (value) => {
+    const price = form.getFieldValue('price')
     form.setFieldsValue({
-      total: +(value * coin.price).toFixed(2),
+      total: +(value * price).toFixed(2),
     })
+  }
+
+  const handlePriceChange = (value) => {
+    const amount = form.getFieldValue('amount')
+    form.setFieldsValue({
+      total: +(amount ? amount : 0 * value).toFixed(2),
+    })
+  }
+
+  const onFinish = (values) => {
+    const newAsset = {
+      id: coin.id,
+      amount: values.amount,
+      price: values.price,
+      date: values.date?.$d ?? new Date(),
+    }
+    assetRef.current = newAsset
+    addAsset(newAsset)
+    setSubmitted(true)
+  }
+
+  if (submitted) {
+    return (
+      <Result
+        status="success"
+        title="New asset added"
+        subTitle={`Added ${assetRef.current.amount} ${coin.name} by price ${assetRef.current.price}$`}
+        extra={[
+          <Button type="primary" key="close" onClick={onClose}>
+            Close
+          </Button>,
+        ]}
+      />
+    )
   }
 
   if (!coin) {
@@ -51,8 +88,6 @@ export const AddAssetFrom = () => {
       />
     )
   }
-
-  const onFinish = (values) => {}
 
   return (
     <Form
@@ -73,16 +108,7 @@ export const AddAssetFrom = () => {
       onFinish={onFinish}
       validateMessages={validateMessages}
     >
-      <Flex align="center">
-        <img
-          src={coin.icon}
-          alt={coin.name}
-          style={{ width: 40, marginRight: 10 }}
-        />
-        <Typography.Title level={2} style={{ margin: 0 }}>
-          ({coin.symbol}) {coin.name}
-        </Typography.Title>
-      </Flex>
+      <CoinInfo coin={coin} />
       <Divider />
 
       <Form.Item
@@ -104,7 +130,7 @@ export const AddAssetFrom = () => {
       </Form.Item>
 
       <Form.Item label="Price" name="price">
-        <InputNumber disabled style={{ width: '100%' }} />
+        <InputNumber onChange={handlePriceChange} style={{ width: '100%' }} />
       </Form.Item>
 
       <Form.Item label="Date & Time" name="date">

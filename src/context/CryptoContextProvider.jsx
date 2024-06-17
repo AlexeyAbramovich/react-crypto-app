@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from 'react'
-import { fakeFetchCryptoAssets, fakeFetchCryptoData } from '../api'
+import { fetchCryptoAssets, fetchCryptoData } from '../api'
 import { percentDifference, totalProfit } from '../utils'
 
 const CryptoContext = createContext({
@@ -13,24 +13,27 @@ export const CryptoContextProvider = ({ children }) => {
   const [data, setData] = useState([])
   const [assets, setAssets] = useState([])
 
+  function mapAssets(assets, result) {
+    return assets.map((asset) => {
+      const coin = result.find((coin) => coin.id === asset.id)
+      return {
+        grow: asset.price < coin.price,
+        growPersent: percentDifference(asset.price, coin.price),
+        totalAmount: asset.amount * coin.price,
+        totalProfit: totalProfit(asset, coin),
+        name: coin.name,
+        ...asset,
+      }
+    })
+  }
+
   useEffect(() => {
     async function preload() {
       setLoading(true)
-      const { result } = await fakeFetchCryptoData()
-      const cryptoAssets = await fakeFetchCryptoAssets()
+      const { result } = await fetchCryptoData()
+      const cryptoAssets = await fetchCryptoAssets()
 
-      setAssets(
-        cryptoAssets.map((asset) => {
-          const coin = result.find((coin) => coin.id === asset.id)
-          return {
-            grow: asset.price < coin.price,
-            growPersent: percentDifference(asset.price, coin.price),
-            totalAmount: asset.amount * coin.price,
-            totalProfit: totalProfit(asset, coin),
-            ...asset,
-          }
-        })
-      )
+      setAssets(mapAssets(cryptoAssets, result))
       setData(result)
 
       setLoading(false)
@@ -38,8 +41,12 @@ export const CryptoContextProvider = ({ children }) => {
     preload()
   }, [])
 
+  function addAsset(newAsset) {
+    setAssets((prev) => mapAssets([...prev, newAsset], data))
+  }
+
   return (
-    <CryptoContext.Provider value={{ assets, data, loading }}>
+    <CryptoContext.Provider value={{ assets, data, loading, addAsset }}>
       {children}
     </CryptoContext.Provider>
   )
