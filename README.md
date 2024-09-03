@@ -8,6 +8,8 @@
 -  React
 -  react-chartjs-2
 -  AntD
+-  HTML
+-  CSS
 
 # Preview
 ![image](https://github.com/AlexeyAbramovich/react-crypto-app/assets/74393859/985eac76-692e-432f-99c4-9077da55514c)
